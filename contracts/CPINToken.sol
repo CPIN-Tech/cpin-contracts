@@ -9,7 +9,7 @@ import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
 
 contract CPINToken is ERC20, ERC20Burnable, ERC20Permit, ERC20Votes {
     constructor() ERC20("CPIN", "CPIN") ERC20Permit("CPIN") {
-        _mint(msg.sender, 200_000_000 * 10 ** decimals());
+        _mint(msg.sender, 10_000_000_000 * 10 ** decimals());
     }
 
     function clock() public view override returns (uint48) {

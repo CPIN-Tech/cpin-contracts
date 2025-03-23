@@ -22,7 +22,6 @@ contract CpinSppStaking is
     MulticallUpgradeable
 {
     using EnumerableSet for EnumerableSet.UintSet;
-    using EnumerableSet for EnumerableSet.AddressSet;
 
     bytes32 public constant SPP_MANAGER_ROLE = keccak256("SPP_MANAGER_ROLE");
     bytes32 public constant DATA_UPDATER_ROLE = keccak256("DATA_UPDATER_ROLE");
@@ -54,7 +53,7 @@ contract CpinSppStaking is
     mapping(uint256 => string) public override sppIpfsCids;
 
     /// @dev sppId => peaq did set
-    mapping(uint256 => EnumerableSet.AddressSet) private sppDids;
+    mapping(uint256 => EnumerableSet.UintSet) private sppDids;
 
     /// @dev tokenId => sppId
     mapping(uint256 => uint256) public override tokenIdToSppId;
@@ -118,23 +117,23 @@ contract CpinSppStaking is
 
     function registerDid(
         uint256 sppId,
-        address didAccount
+        uint256 didAccountPubKey
     ) external override onlyRole(SPP_MANAGER_ROLE) {
         require(sppDatas[sppId].startTime > 0, "SPP not found");
-        require(didAccount != address(0), "invalid address");
-        require(sppDids[sppId].contains(didAccount) == false, "already registered");
-        sppDids[sppId].add(didAccount);
-        emit DidRegistered(sppId, didAccount);
+        require(didAccountPubKey != 0, "invalid address");
+        require(sppDids[sppId].contains(didAccountPubKey) == false, "already registered");
+        sppDids[sppId].add(didAccountPubKey);
+        emit DidRegistered(sppId, didAccountPubKey);
     }
 
     function unregisterDid(
         uint256 sppId,
-        address didAccount
+        uint256 didAccountPubKey
     ) external override onlyRole(SPP_MANAGER_ROLE) {
         require(sppDatas[sppId].startTime > 0, "SPP not found");
-        require(sppDids[sppId].contains(didAccount), "did not found");
-        sppDids[sppId].remove(didAccount);
-        emit DidUnregistered(sppId, didAccount);
+        require(sppDids[sppId].contains(didAccountPubKey), "did not found");
+        sppDids[sppId].remove(didAccountPubKey);
+        emit DidUnregistered(sppId, didAccountPubKey);
     }
 
     function getSppDidCount(uint256 sppId) external view override returns (uint256) {
@@ -143,7 +142,7 @@ contract CpinSppStaking is
     function getSppDidByIndex(
         uint256 sppId,
         uint256 index
-    ) external view override returns (address) {
+    ) external view override returns (uint256) {
         return sppDids[sppId].at(index);
     }
 
