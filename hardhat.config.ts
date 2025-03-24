@@ -86,7 +86,7 @@ const config: HardhatUserConfig = {
       accounts: accounts('peaq_agung'),
     },
     peaq_mainnet: {
-      url: 'https://peaq-rpc.publicnode.com',
+      url: 'https://evm.peaq.network',
       chainId: 3338,
       accounts: accounts('peaq_mainnet'),
     },

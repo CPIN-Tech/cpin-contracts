@@ -79,7 +79,8 @@
     "fork:test": "node ./_scripts.js fork:test",
     "tenderly:push": "node ./_scripts.js tenderly:push",
     "encrypt": "ts-node ./utils/encrypt-text.ts",
-    "decrypt": "ts-node ./utils/decrypt-text.ts"
+    "decrypt": "ts-node ./utils/decrypt-text.ts",
+    "solinput": "ts-node ./utils/solinput-generator.ts"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^5.0.2",
