@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/Pausable.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 contract CpinConverter is ReentrancyGuard, AccessControl, Pausable {
     event CDATAConverted(address indexed account, uint256 cdataAmount, uint256 cpinAmount);
@@ -13,50 +14,57 @@ contract CpinConverter is ReentrancyGuard, AccessControl, Pausable {
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     bytes32 public constant UPDATER_ROLE = keccak256("UPDATER_ROLE");
 
-    IERC20 public immutable CPINToken;
     IERC20 public immutable CDATAToken;
     IERC20 public immutable CWATTToken;
 
-    uint256 public cdataExchangeRate; // for every 1_000_000 CDATA, how many CPIN
-    uint256 public cwattExchangeRate; // for every 1_000_000 CWATT, how many CPIN
+    mapping(address => uint256) public cdataExchangeRates; // for every 1_000_000 CDATA, how many X token
+    mapping(address => uint256) public cwattExchangeRates; // for every 1_000_000 CWATT, how many X token
 
-    constructor(
-        IERC20 _CPINToken,
-        IERC20 _CDATAToken,
-        IERC20 _CWATTToken,
-        uint256 _cdataExchangeRate,
-        uint256 _cwattExchangeRate
-    ) {
-        CPINToken = _CPINToken;
+    constructor(IERC20 _CDATAToken, IERC20 _CWATTToken) {
         CDATAToken = _CDATAToken;
         CWATTToken = _CWATTToken;
-        cdataExchangeRate = _cdataExchangeRate;
-        cwattExchangeRate = _cwattExchangeRate;
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(PAUSER_ROLE, msg.sender);
         _grantRole(UPDATER_ROLE, msg.sender);
     }
 
     //////////  SETTERS ///////////
-    function setCdataExchangeRate(uint256 _exchangeRate) public onlyRole(UPDATER_ROLE) {
-        cdataExchangeRate = _exchangeRate;
+    function setCdataExchangeRate(
+        address currency,
+        uint256 _exchangeRate
+    ) public onlyRole(UPDATER_ROLE) {
+        cdataExchangeRates[currency] = _exchangeRate;
     }
-    function setCwattExchangeRate(uint256 _exchangeRate) public onlyRole(UPDATER_ROLE) {
-        cwattExchangeRate = _exchangeRate;
+
+    function setCwattExchangeRate(
+        address currency,
+        uint256 _exchangeRate
+    ) public onlyRole(UPDATER_ROLE) {
+        cwattExchangeRates[currency] = _exchangeRate;
     }
     /////////////////////////////////
 
-    function convertCDATA(uint256 amount) public nonReentrant whenNotPaused returns (bool sucess) {
-        CDATAToken.transferFrom(msg.sender, address(this), amount);
-        uint256 cpinAmount = (amount * cdataExchangeRate) / 1_000_000;
-        CPINToken.transfer(msg.sender, cpinAmount);
+    function convertCDATA(
+        address currency,
+        uint256 cdataAmount
+    ) public nonReentrant whenNotPaused returns (bool sucess) {
+        uint256 exchangeRate = cdataExchangeRates[currency];
+        require(exchangeRate > 0, "invalid currency");
+        CDATAToken.transferFrom(msg.sender, address(this), cdataAmount);
+        uint256 outputAmount = (cdataAmount * exchangeRate) / 1_000_000;
+        SafeERC20.safeTransfer(IERC20(currency), msg.sender, outputAmount);
         return true;
     }
 
-    function convertCWATT(uint256 amount) public nonReentrant whenNotPaused returns (bool sucess) {
-        CWATTToken.transferFrom(msg.sender, address(this), amount);
-        uint256 cpinAmount = (amount * cwattExchangeRate) / 1_000_000;
-        CPINToken.transfer(msg.sender, cpinAmount);
+    function convertCWATT(
+        address currency,
+        uint256 cwattAmount
+    ) public nonReentrant whenNotPaused returns (bool sucess) {
+        uint256 exchangeRate = cwattExchangeRates[currency];
+        require(exchangeRate > 0, "invalid currency");
+        CWATTToken.transferFrom(msg.sender, address(this), cwattAmount);
+        uint256 outputAmount = (cwattAmount * exchangeRate) / 1_000_000;
+        SafeERC20.safeTransfer(IERC20(currency), msg.sender, outputAmount);
         return true;
     }
 

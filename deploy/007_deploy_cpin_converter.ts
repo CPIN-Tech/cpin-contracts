@@ -1,27 +1,40 @@
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
-import { DeployFunction } from 'hardhat-deploy/types';
-import { IERC20 } from '../typechain';
+import { DeployFunction, DeployResult } from 'hardhat-deploy/types';
+import { ERC20, CpinConverter } from '../typechain';
+import exec from '../utils/exec';
 
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deployments, getNamedAccounts, ethers } = hre;
   const { deployer } = await getNamedAccounts();
 
-  const cpin: IERC20 = await ethers.getContract('CPINToken', deployer);
-  const cdata: IERC20 = await ethers.getContract('CDATAToken', deployer);
-  const cwatt: IERC20 = await ethers.getContract('CWATTToken', deployer);
+  const cdata: ERC20 = await ethers.getContract('CDATAToken', deployer);
+  const cwatt: ERC20 = await ethers.getContract('CWATTToken', deployer);
 
-  await deployments.deploy('CpinConverter', {
+  const deployResult: DeployResult = await deployments.deploy('CpinConverter', {
     from: deployer,
     args: [
-      cpin.address, // IERC20 _CPINToken,
       cdata.address, //IERC20 _CDATAToken,
       cwatt.address, //IERC20 _CWATTToken,
-      1_000, //uint256 _cdataExchangeRate,
-      10_000, //uint256 _cwattExchangeRate
     ],
     log: true,
     autoMine: true,
   });
+
+  if (deployResult.newlyDeployed) {
+    const converter: CpinConverter = await ethers.getContract('CpinConverter', deployer);
+    const cpin: ERC20 = await ethers.getContract('CPINToken', deployer);
+    const peaq: ERC20 = await ethers.getContractAt(
+      'ERC20',
+      '0x0000000000000000000000000000000000000809',
+      deployer
+    );
+
+    await exec('setCdataExchangeRate cpin', converter.setCdataExchangeRate(cpin.address, 1_000));
+    await exec('setCwattExchangeRate cpin', converter.setCdataExchangeRate(cpin.address, 1_000));
+
+    await exec('setCdataExchangeRate peaq', converter.setCdataExchangeRate(peaq.address, 10_000));
+    await exec('setCwattExchangeRate peaq', converter.setCdataExchangeRate(peaq.address, 10_000));
+  }
 };
 
 export default func;
