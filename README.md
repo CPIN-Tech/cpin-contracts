@@ -2,13 +2,13 @@
 
 ## Deployed Addresses on PEAQ Mainnet
 
-- CPIN Token - 0x06E3cB6b9D0B4089eFF7431AB496362591183E83
-- CWATT Token - 0x3556aA434Bdcf429D59183d65B6cf036722Ac259
-- CDATA Token - 0xa65Dab5831898d9A63De0e67FCf68a34D19102bC
-- Virtual Panel NFT - 0xa85c10190943BBc46dDE84024f9070e54987fa52
-- CpinBuyPanel - 0x0A493a73860DBC93f6CDE70D83799c296b9ad79D
-- CpinSppStaking - 0x5D19b364df25EBF6954296028B851BE38CB1f1a7
-- CpinConverter - 0x83eaE3Bc9a3F9Ba0D76C55212ab037206d03d496
+- CPIN Token - [0x06E3cB6b9D0B4089eFF7431AB496362591183E83](https://peaq.subscan.io/account/0x06E3cB6b9D0B4089eFF7431AB496362591183E83?tab=contract)
+- CWATT Token - [0x3556aA434Bdcf429D59183d65B6cf036722Ac259](https://peaq.subscan.io/account/0x3556aA434Bdcf429D59183d65B6cf036722Ac259?tab=contract)
+- CDATA Token - [0xa65Dab5831898d9A63De0e67FCf68a34D19102bC](https://peaq.subscan.io/account/0xa65Dab5831898d9A63De0e67FCf68a34D19102bC?tab=contract)
+- Virtual Panel NFT - [0xa85c10190943BBc46dDE84024f9070e54987fa52](https://peaq.subscan.io/account/0xa85c10190943BBc46dDE84024f9070e54987fa52?tab=contract)
+- CpinBuyPanel - [0x0A493a73860DBC93f6CDE70D83799c296b9ad79D](https://peaq.subscan.io/account/0x0A493a73860DBC93f6CDE70D83799c296b9ad79D?tab=contract)
+- CpinSppStaking - [0x03134b6118537D9aBd581E6846C5eA9Ad95eDa99](https://peaq.subscan.io/account/0x03134b6118537D9aBd581E6846C5eA9Ad95eDa99?tab=contract)
+- CpinConverter - [0x83eaE3Bc9a3F9Ba0D76C55212ab037206d03d496](https://peaq.subscan.io/account/0x83eaE3Bc9a3F9Ba0D76C55212ab037206d03d496?tab=contract)
 
 ## Architecture
 

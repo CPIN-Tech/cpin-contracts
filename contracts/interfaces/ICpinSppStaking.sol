@@ -8,8 +8,8 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 interface ICpinSppStaking is IERC721Receiver {
     event SppCreated(uint256 sppId, uint32 startTime, string infoIpfsCid);
-    event DidRegistered(uint256 sppId, uint256 didAccountPubKey);
-    event DidUnregistered(uint256 sppId, uint256 didAccountPubKey);
+    event DidRegistered(uint256 sppId, address didAccount);
+    event DidUnregistered(uint256 sppId, address didAccount);
     event SppIpfsCidUpdated(uint256 sppId, string ipfsCid);
     event ProductionInfoAdded(
         uint256 sppId,
@@ -68,10 +68,10 @@ interface ICpinSppStaking is IERC721Receiver {
         string memory infoIpfsCid
     ) external;
 
-    function registerDid(uint256 sppId, uint256 didAccountPubKey) external;
-    function unregisterDid(uint256 sppId, uint256 didAccountPubKey) external;
+    function registerDid(uint256 sppId, address didAccount) external;
+    function unregisterDid(uint256 sppId, address didAccount) external;
     function getSppDidCount(uint256 sppId) external view returns (uint256);
-    function getSppDidByIndex(uint256 sppId, uint256 index) external view returns (uint256);
+    function getSppDidByIndex(uint256 sppId, uint256 index) external view returns (address);
 
     function updateSppIpfsCid(uint256 sppId, string memory ipfsCid) external;
 
